@@ -47,6 +47,8 @@ public class SplashActivity extends AppCompatActivity {
                 SplashActivity.this.finish();
             }
         }, 1500);
+
+        // 测试版本回退
     }
 
     /**
