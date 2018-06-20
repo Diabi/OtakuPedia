@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="homepage">首页</string>
+    <string name="mine">我的</string>
+    <string name="splash_image">splash_image</string>
+    <string name="otaku_image">otaku_image</string>
+    <string name="otaku_pedia">宅百科</string>
+    <string name="definition">定义</string>
+    <string name="representation">代表作品</string>
+    <string name="username">未登录</string>
+    <string name="my_pace">我的足迹</string>
+    <string name="wanna_know">我想知道</string>
+    <string name="link">萌娘百科传送门</string>
+    <string name="mn_pedia">萌娘百科  →.→</string>
+</resources>
