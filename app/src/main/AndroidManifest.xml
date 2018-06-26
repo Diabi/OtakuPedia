@@ -23,7 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.InfoActivity" />
+        <activity android:name=".activity.OtakuInfoActivity" />
         <activity android:name=".activity.MnPediaActivity"></activity>
     </application>
 

@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class InfoActivity extends AppCompatActivity {
+public class OtakuInfoActivity extends AppCompatActivity {
 
     private Unbinder unbinder;
 
@@ -45,7 +45,7 @@ public class InfoActivity extends AppCompatActivity {
 
     @OnClick(R.id.tv_link)
     public void onViewClicked() {
-        Intent intent = new Intent(InfoActivity.this, MnPediaActivity.class);
+        Intent intent = new Intent(OtakuInfoActivity.this, MnPediaActivity.class);
         intent.putExtra("url", url);
         intent.putExtra("title", mtitle);
         startActivity(intent);

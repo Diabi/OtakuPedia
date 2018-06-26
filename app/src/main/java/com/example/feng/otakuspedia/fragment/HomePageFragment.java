@@ -1,7 +1,6 @@
 package com.example.feng.otakuspedia.fragment;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -13,19 +12,15 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.feng.otakuspedia.R;
-import com.example.feng.otakuspedia.activity.InfoActivity;
+import com.example.feng.otakuspedia.activity.OtakuInfoActivity;
 import com.example.feng.otakuspedia.adpter.HomeAdapter;
 import com.example.feng.otakuspedia.bean.OtakuItem;
 import com.example.feng.otakuspedia.util.ToastUtil;
-import com.jayfang.dropdownmenu.DropDownMenu;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -224,7 +219,7 @@ public class HomePageFragment extends Fragment {
             bundle.putString("representation", item.getRepresentation());
             bundle.putString("url", item.getUrl());
         }
-        Intent intent = new Intent(getContext(), InfoActivity.class);
+        Intent intent = new Intent(getContext(), OtakuInfoActivity.class);
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
     }
