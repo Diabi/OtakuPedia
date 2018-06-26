@@ -16,10 +16,10 @@ import java.util.List;
  * Created by Feng on 2018/6/17.
  */
 
-public class HomeAdapter extends BaseQuickAdapter<OtakuItem, BaseViewHolder> {
+public class OtakuItemAdapter extends BaseQuickAdapter<OtakuItem, BaseViewHolder> {
     private Context mContext;
 
-    public HomeAdapter(int layoutResId, @Nullable List<OtakuItem> data, Context context) {
+    public OtakuItemAdapter(int layoutResId, @Nullable List<OtakuItem> data, Context context) {
         super(layoutResId, data);
         mContext = context;
     }

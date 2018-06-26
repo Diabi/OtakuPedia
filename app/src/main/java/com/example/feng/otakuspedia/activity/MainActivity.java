@@ -1,5 +1,6 @@
 package com.example.feng.otakuspedia.activity;
 
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Unbinder unbinder;
     @BindView(R.id.main_tab_bar)
-    JPTabBar tabBar;
+    JPTabBar bottomTabBar;
     @BindView(R.id.main_viewpager)
     ViewPager mViewPager;
 
@@ -46,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        /*Bmob.initialize(this, "8b3d64921bc289b3e28e15258d220bde");*/
         unbinder = ButterKnife.bind(this);
         initViewPager();
     }
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         list.add(MineFragment.getInstance());
         HomePagerAdapter adapter = new HomePagerAdapter(getSupportFragmentManager(), list);
         mViewPager.setAdapter(adapter);
-        tabBar.setContainer(mViewPager);
+        bottomTabBar.setContainer(mViewPager);
     }
 
     @Override

@@ -26,25 +26,26 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="?attr/actionBarSize"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tl_home"
+            android:layout_width="300dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_horizontal"
+            app:tabSelectedTextColor="@color/colorPrimary"/>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vp_viewpager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+        </android.support.v4.view.ViewPager>
 
-    <android.support.v4.widget.ContentLoadingProgressBar
-        android:id="@+id/loading_progress"
-        style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
