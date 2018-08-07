@@ -1,4 +1,4 @@
-package com.example.feng.otakuspedia.fragment;
+package com.example.feng.otakuspedia.module.mine;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

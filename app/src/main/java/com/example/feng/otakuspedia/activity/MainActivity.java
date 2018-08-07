@@ -1,18 +1,15 @@
 package com.example.feng.otakuspedia.activity;
 
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.example.feng.otakuspedia.R;
 import com.example.feng.otakuspedia.adpter.HomePagerAdapter;
-import com.example.feng.otakuspedia.fragment.HomePageFragment;
-import com.example.feng.otakuspedia.fragment.MineFragment;
+import com.example.feng.otakuspedia.module.home.HomePageFragment;
+import com.example.feng.otakuspedia.module.mine.MineFragment;
 import com.example.feng.otakuspedia.util.ToastUtil;
+import com.example.feng.otakuspedia.view.NoScrollViewPager;
 import com.jpeng.jptabbar.JPTabBar;
 import com.jpeng.jptabbar.anno.NorIcons;
 import com.jpeng.jptabbar.anno.SeleIcons;
@@ -24,7 +21,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import cn.bmob.v3.Bmob;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.main_tab_bar)
     JPTabBar bottomTabBar;
     @BindView(R.id.main_viewpager)
-    ViewPager mViewPager;
+    NoScrollViewPager mViewPager;
 
     @Titles
     public static final String[] titles = {"首页", "我的"};

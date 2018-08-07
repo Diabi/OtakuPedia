@@ -9,4 +9,5 @@
     <color name="secondary_text">#757575</color>
     <color name="third_text">#4CAF50</color>
     <color name="window_background">#eaeaea</color>
+    <color name="search_background">#6fbf72</color>
 </resources>

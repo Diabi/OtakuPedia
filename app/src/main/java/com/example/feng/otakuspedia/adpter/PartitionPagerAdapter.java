@@ -14,7 +14,7 @@ import java.util.List;
 public class PartitionPagerAdapter extends FragmentPagerAdapter {
 
     private List<Fragment> fragmentList = new ArrayList<>();
-    private final String[] titles = {"梗", "CV", "名作"};
+    private final String[] titles = {"热词", "名作", "人物"};
 
     public PartitionPagerAdapter(FragmentManager fm, List<Fragment> list) {
         super(fm);

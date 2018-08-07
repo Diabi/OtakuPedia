@@ -26,7 +26,6 @@ public class SplashActivity extends AppCompatActivity {
             R.drawable.chunwu1,
             R.drawable.chunwu2,
             R.drawable.chunwu3,
-            R.drawable.chunwu4,
             R.drawable.chunwu5,
             R.drawable.chunwu6};
 

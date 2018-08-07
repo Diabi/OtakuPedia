@@ -24,7 +24,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.OtakuInfoActivity" />
-        <activity android:name=".activity.MnPediaActivity"></activity>
+        <activity android:name=".activity.MnPediaActivity" />
+        <activity
+            android:name=".activity.BangumiInfoActivity"
+            android:theme="@style/AppTheme.FullScreen" />
+        <activity android:name=".activity.SearchActivity"></activity>
     </application>
 
 </manifest>

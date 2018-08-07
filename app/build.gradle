@@ -52,6 +52,10 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
     implementation 'com.github.JayFang1993:DropDownMenu:v0.9'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation 'com.miguelcatalan:materialsearchview:1.4.0'
+    implementation('com.github.chrisbanes:PhotoView:2.1.4') {
+        exclude group: 'com.android.support'
+    }
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:0.5'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'

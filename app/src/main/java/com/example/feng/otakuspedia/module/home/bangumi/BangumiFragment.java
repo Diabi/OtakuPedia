@@ -1,14 +1,13 @@
-package com.example.feng.otakuspedia.fragment.home;
+package com.example.feng.otakuspedia.module.home.bangumi;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,9 +16,9 @@ import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.feng.otakuspedia.R;
-import com.example.feng.otakuspedia.activity.OtakuInfoActivity;
-import com.example.feng.otakuspedia.adpter.OtakuItemAdapter;
-import com.example.feng.otakuspedia.bean.OtakuItem;
+import com.example.feng.otakuspedia.activity.BangumiInfoActivity;
+import com.example.feng.otakuspedia.adpter.BangumiItemAdapter;
+import com.example.feng.otakuspedia.bean.BangumiItem;
 import com.example.feng.otakuspedia.util.ToastUtil;
 
 import java.util.ArrayList;
@@ -34,17 +33,19 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
 /**
- * Created by Feng on 2018/6/17.
+ * Created by Feng on 2018/6/26.
  */
 
-public class OtakuFragment extends Fragment {
+public class BangumiFragment extends Fragment implements IBangumiView {
 
     private View mView;
     private Unbinder unbinder;
-    private OtakuItemAdapter otakuItemAdapter;
-    private List<OtakuItem> mList = new ArrayList<>();
-    private static int loadFactor = 6;
+    private List<BangumiItem> mList = new ArrayList<>();
+    private BangumiItemAdapter bangumiItemAdapter;
+    private static int loadFactor = 4;
 
+    private BangumiPresenter bangumiPresenter;
+    
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
     @BindView(R.id.swipe_refresh)
@@ -52,57 +53,44 @@ public class OtakuFragment extends Fragment {
     @BindView(R.id.loading_progress)
     ContentLoadingProgressBar progressBar;
 
-    /**
-     * 生成HomePageFragment实例
-     * @return
-     */
-    public static OtakuFragment getInstance() {
-        return new OtakuFragment();
+    public static BangumiFragment getInstance() { return new BangumiFragment(); }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        bangumiPresenter = new BangumiPresenter(this);
     }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         if (mView == null) {
-            mView = inflater.inflate(R.layout.otaku_fragment, container, false);
+            mView = inflater.inflate(R.layout.bangumi_fragment, container, false);
             unbinder = ButterKnife.bind(this, mView);
-            loadOtakuItem();
+            bangumiPresenter.getBangumiData(loadFactor);
             setOnPullRefresh();
         }
         return mView;
     }
 
-    /**
-     * 从云端读取数据
-     */
-    private void loadOtakuItem() {
-        try {
-            BmobQuery<OtakuItem> query = new BmobQuery<>();
-            query.setLimit(loadFactor);
-            query.order("-createdAt");
-            query.findObjects(new FindListener<OtakuItem>() {
-                @Override
-                public void done(List<OtakuItem> list, BmobException e) {
-                    if (e == null) {
-                        onDataLoaded(list);
-                    } else {
-                        ToastUtil.toast(getContext(), "加载失败，请重试");
-                        Log.e("读取失败", e.toString());
-                    }
-                    refreshLayout.setRefreshing(false);
-                    progressBar.hide();
-                }
-            });
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public void showProgress() {
+        progressBar.show();
     }
 
-    /**
-     * 数据加载完成
-     */
-    private void onDataLoaded(List<OtakuItem> list) {
+    @Override
+    public void hideProgress() {
+        progressBar.hide();
+    }
+
+    @Override
+    public void refreshComplete() {
+        refreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void loadBangumiData(List<BangumiItem> list) {
         mList = list;
         Collections.shuffle(list);
         createList();
@@ -112,11 +100,11 @@ public class OtakuFragment extends Fragment {
      * 生成列表
      */
     private void createList() {
-        otakuItemAdapter = new OtakuItemAdapter(R.layout.otaku_item, mList, getContext());
-        GridLayoutManager manager = new GridLayoutManager(getContext(), 2);
+        bangumiItemAdapter = new BangumiItemAdapter(R.layout.bangumi_item, mList, getContext());
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(manager);
-        mRecyclerView.setAdapter(otakuItemAdapter);
-        otakuItemAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT); // 开启动画
+        mRecyclerView.setAdapter(bangumiItemAdapter);
+        bangumiItemAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_RIGHT); // 开启动画
         setOnPullLoadMore();
         setOnItemClickedListener();
     }
@@ -129,7 +117,7 @@ public class OtakuFragment extends Fragment {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadOtakuItem();
+                bangumiPresenter.getBangumiData(loadFactor);
             }
         });
     }
@@ -138,14 +126,14 @@ public class OtakuFragment extends Fragment {
      * 上拉加载更多
      */
     private void setOnPullLoadMore() {
-        otakuItemAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+        bangumiItemAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
             public void onLoadMoreRequested() {
                 loadFactor += 4;
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        reloadOtakuItem();
+                        reloadBangumiItem();
                     }
                 }, 1500);
             }
@@ -155,19 +143,19 @@ public class OtakuFragment extends Fragment {
     /**
      * 以新的加载因子从服务器读取数据
      */
-    private void reloadOtakuItem() {
-        BmobQuery<OtakuItem> query = new BmobQuery<>();
+    private void reloadBangumiItem() {
+        BmobQuery<BangumiItem> query = new BmobQuery<>();
         query.setLimit(loadFactor);
         query.order("-createdAt");
-        query.findObjects(new FindListener<OtakuItem>() {
+        query.findObjects(new FindListener<BangumiItem>() {
             @Override
-            public void done(List<OtakuItem> list, BmobException e) {
+            public void done(List<BangumiItem> list, BmobException e) {
                 if (e == null) {
                     onReloadSuccess(list);
                 } else {
                     ToastUtil.toast(getContext(), "加载失败, 请重试");
                     Log.e("读取失败", e.toString());
-                    otakuItemAdapter.loadMoreFail();
+                    bangumiItemAdapter.loadMoreFail();
                 }
             }
         });
@@ -177,26 +165,26 @@ public class OtakuFragment extends Fragment {
      * 重新加载完成
      * @param list
      */
-    private void onReloadSuccess(List<OtakuItem> list) {
+    private void onReloadSuccess(List<BangumiItem> list) {
         if (mList.size() >= list.size()) {
-            otakuItemAdapter.loadMoreEnd();
+            bangumiItemAdapter.loadMoreEnd();
             return;
         }
         int size = mList.size();
         for (int i = size; i < list.size(); i++)
             mList.add(list.get(i));
-        otakuItemAdapter.notifyDataSetChanged();
-        otakuItemAdapter.loadMoreComplete();
+        bangumiItemAdapter.notifyDataSetChanged();
+        bangumiItemAdapter.loadMoreComplete();
     }
 
     /**
      * 设置item点击监听
      */
     private void setOnItemClickedListener() {
-        otakuItemAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+        bangumiItemAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                showOtakuItemInfo(position);
+                showBangumiItemInfo(position);
             }
         });
     }
@@ -204,16 +192,16 @@ public class OtakuFragment extends Fragment {
     /**
      * 跳转到详情界面
      */
-    private void showOtakuItemInfo(int pos) {
-        OtakuItem item = otakuItemAdapter.getItem(pos);
+    private void showBangumiItemInfo(int pos) {
+        BangumiItem item = bangumiItemAdapter.getItem(pos);
         Bundle bundle = new Bundle();
         if (item != null) {
             bundle.putString("title", item.getTitle());
-            bundle.putString("definition", item.getDefinition());
-            bundle.putString("representation", item.getRepresentation());
-            bundle.putString("url", item.getUrl());
+            bundle.putString("content", item.getContent());
+            if (item.getExpandImage() != null)
+                bundle.putString("url", item.getExpandImage().getFileUrl());
         }
-        Intent intent = new Intent(getContext(), OtakuInfoActivity.class);
+        Intent intent = new Intent(getContext(), BangumiInfoActivity.class);
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
     }

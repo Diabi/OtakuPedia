@@ -3,6 +3,9 @@ package com.example.feng.otakuspedia.bean;
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobFile;
 
+/**
+ * 梗item
+ */
 public class OtakuItem extends BmobObject {
     private String title;
     private String definition;

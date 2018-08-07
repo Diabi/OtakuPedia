@@ -12,4 +12,8 @@
     <string name="wanna_know">我想知道</string>
     <string name="link">萌娘百科传送门</string>
     <string name="mn_pedia">萌娘百科  →.→</string>
+    <string name="search_icon">搜索</string>
+    <string name="bangumi_image">番剧图片</string>
+    <string name="bangumi_expand_image">番剧图片</string>
+    <string name="action_sort">排序按钮</string>
 </resources>
