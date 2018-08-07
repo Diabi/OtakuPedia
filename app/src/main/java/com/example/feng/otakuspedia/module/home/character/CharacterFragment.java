@@ -36,13 +36,15 @@ import cn.bmob.v3.listener.FindListener;
  * Created by Feng on 2018/6/26.
  */
 
-public class CharacterFragment extends Fragment {
+public class CharacterFragment extends Fragment implements ICharacterView {
 
     private View mView;
     private Unbinder unbinder;
     private List<CharacterItem> mList = new ArrayList<>();
     private CharacterItemAdapter bangumiItemAdapter;
     private static int loadFactor = 9;
+
+    private CharacterPresenter characterPresenter;
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
@@ -53,6 +55,12 @@ public class CharacterFragment extends Fragment {
 
     public static CharacterFragment getInstance() { return new CharacterFragment(); }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        characterPresenter = new CharacterPresenter(this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -60,45 +68,50 @@ public class CharacterFragment extends Fragment {
         if (mView == null) {
             mView = inflater.inflate(R.layout.bangumi_fragment, container, false);
             unbinder = ButterKnife.bind(this, mView);
-            loadCharacterItem();
+            characterPresenter.loadCharacterData(loadFactor);
             setOnPullRefresh();
         }
         return mView;
     }
 
-    /**
-     * 从云端读取数据
-     */
-    private void loadCharacterItem() {
-        try {
-            BmobQuery<CharacterItem> query = new BmobQuery<>();
-            query.setLimit(loadFactor);
-            query.order("-createdAt");
-            query.findObjects(new FindListener<CharacterItem>() {
-                @Override
-                public void done(List<CharacterItem> list, BmobException e) {
-                    if (e == null) {
-                        onDataLoaded(list);
-                    } else {
-                        ToastUtil.toast(getContext(), "加载失败，请重试");
-                        Log.e("读取失败", e.toString());
-                    }
-                    refreshLayout.setRefreshing(false);
-                    progressBar.hide();
-                }
-            });
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 数据加载完成
-     */
-    private void onDataLoaded(List<CharacterItem> list) {
+    @Override
+    public void onSuccess(List<CharacterItem> list) {
         mList = list;
         Collections.shuffle(list);
         createList();
+        refreshLayout.setRefreshing(false);
+        progressBar.hide();
+    }
+
+    @Override
+    public void onFailure(BmobException e) {
+        ToastUtil.toast(getContext(), "加载失败，请重试");
+        Log.e("读取失败", e.toString());
+    }
+
+    @Override
+    public void onReloadSuccess(List<CharacterItem> list) {
+        if (mList.size() >= list.size()) {
+            bangumiItemAdapter.loadMoreEnd();
+            return;
+        }
+        int size = mList.size();
+        for (int i = size; i < list.size(); i++)
+            mList.add(list.get(i));
+        bangumiItemAdapter.notifyDataSetChanged();
+        bangumiItemAdapter.loadMoreComplete();
+    }
+
+    @Override
+    public void onReloadFailed(BmobException e) {
+        ToastUtil.toast(getContext(), "加载失败, 请重试");
+        Log.e("读取失败", e.toString());
+        bangumiItemAdapter.loadMoreFail();
+    }
+
+    @Override
+    public void showProgress() {
+        progressBar.show();
     }
 
     /**
@@ -123,7 +136,7 @@ public class CharacterFragment extends Fragment {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadCharacterItem();
+                characterPresenter.loadCharacterData(loadFactor);
             }
         });
     }
@@ -139,48 +152,11 @@ public class CharacterFragment extends Fragment {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        reloadCharacterItem();
+                        characterPresenter.reloadCharacterData(loadFactor);
                     }
                 }, 1500);
             }
         }, mRecyclerView);
-    }
-
-    /**
-     * 以新的加载因子从服务器读取数据
-     */
-    private void reloadCharacterItem() {
-        BmobQuery<CharacterItem> query = new BmobQuery<>();
-        query.setLimit(loadFactor);
-        query.order("-createdAt");
-        query.findObjects(new FindListener<CharacterItem>() {
-            @Override
-            public void done(List<CharacterItem> list, BmobException e) {
-                if (e == null) {
-                    onReloadSuccess(list);
-                } else {
-                    ToastUtil.toast(getContext(), "加载失败, 请重试");
-                    Log.e("读取失败", e.toString());
-                    bangumiItemAdapter.loadMoreFail();
-                }
-            }
-        });
-    }
-
-    /**
-     * 重新加载完成
-     * @param list
-     */
-    private void onReloadSuccess(List<CharacterItem> list) {
-        if (mList.size() >= list.size()) {
-            bangumiItemAdapter.loadMoreEnd();
-            return;
-        }
-        int size = mList.size();
-        for (int i = size; i < list.size(); i++)
-            mList.add(list.get(i));
-        bangumiItemAdapter.notifyDataSetChanged();
-        bangumiItemAdapter.loadMoreComplete();
     }
 
     /**

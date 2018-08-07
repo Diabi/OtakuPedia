@@ -26,7 +26,7 @@ public class HotWordPresenter implements HotWordModel.HotWordListener {
     }
 
     void regainHotWordData(int loadFacotr) {
-        hotWordModel.changeLoadFactor(loadFacotr);
+        hotWordModel.regainHotWordData(loadFacotr);
     }
 
     @Override

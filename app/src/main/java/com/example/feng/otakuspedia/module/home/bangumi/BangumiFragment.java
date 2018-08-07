@@ -90,10 +90,30 @@ public class BangumiFragment extends Fragment implements IBangumiView {
     }
 
     @Override
+    public void onReloadFailed(BmobException e) {
+        ToastUtil.toast(getContext(), "加载失败, 请重试");
+        Log.e("读取失败", e.toString());
+        bangumiItemAdapter.loadMoreFail();
+    }
+
+    @Override
     public void loadBangumiData(List<BangumiItem> list) {
         mList = list;
         Collections.shuffle(list);
         createList();
+    }
+
+    @Override
+    public void reloadBangumiData(List<BangumiItem> list) {
+        if (mList.size() >= list.size()) {
+            bangumiItemAdapter.loadMoreEnd();
+            return;
+        }
+        int size = mList.size();
+        for (int i = size; i < list.size(); i++)
+            mList.add(list.get(i));
+        bangumiItemAdapter.notifyDataSetChanged();
+        bangumiItemAdapter.loadMoreComplete();
     }
 
     /**
@@ -133,48 +153,11 @@ public class BangumiFragment extends Fragment implements IBangumiView {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        reloadBangumiItem();
+                        bangumiPresenter.regainBangumiData(loadFactor);
                     }
                 }, 1500);
             }
         }, mRecyclerView);
-    }
-
-    /**
-     * 以新的加载因子从服务器读取数据
-     */
-    private void reloadBangumiItem() {
-        BmobQuery<BangumiItem> query = new BmobQuery<>();
-        query.setLimit(loadFactor);
-        query.order("-createdAt");
-        query.findObjects(new FindListener<BangumiItem>() {
-            @Override
-            public void done(List<BangumiItem> list, BmobException e) {
-                if (e == null) {
-                    onReloadSuccess(list);
-                } else {
-                    ToastUtil.toast(getContext(), "加载失败, 请重试");
-                    Log.e("读取失败", e.toString());
-                    bangumiItemAdapter.loadMoreFail();
-                }
-            }
-        });
-    }
-
-    /**
-     * 重新加载完成
-     * @param list
-     */
-    private void onReloadSuccess(List<BangumiItem> list) {
-        if (mList.size() >= list.size()) {
-            bangumiItemAdapter.loadMoreEnd();
-            return;
-        }
-        int size = mList.size();
-        for (int i = size; i < list.size(); i++)
-            mList.add(list.get(i));
-        bangumiItemAdapter.notifyDataSetChanged();
-        bangumiItemAdapter.loadMoreComplete();
     }
 
     /**

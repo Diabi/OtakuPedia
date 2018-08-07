@@ -41,7 +41,7 @@ class HotWordModel {
         }
     }
 
-    void changeLoadFactor(int loadFactor) {
+    void regainHotWordData(int loadFactor) {
         try {
             BmobQuery<OtakuItem> query = new BmobQuery<>();
             query.setLimit(loadFactor);

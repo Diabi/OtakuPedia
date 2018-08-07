@@ -4,6 +4,8 @@ import com.example.feng.otakuspedia.bean.BangumiItem;
 
 import java.util.List;
 
+import cn.bmob.v3.exception.BmobException;
+
 /**
  * Created by Feng on 2018/8/7.
  */
@@ -22,6 +24,10 @@ public class BangumiPresenter implements BangumiModel.BangumiListener {
         bangumiModel.getBangumiData(loadFactor);
     }
 
+    void regainBangumiData(int loadFactor) {
+        bangumiModel.regainBangumiData(loadFactor);
+    }
+
     @Override
     public void onSuccess(List<BangumiItem> list) {
         bangumiView.loadBangumiData(list);
@@ -32,5 +38,15 @@ public class BangumiPresenter implements BangumiModel.BangumiListener {
     @Override
     public void onFailure() {
         bangumiView.hideProgress();
+    }
+
+    @Override
+    public void onReloadSuccess(List<BangumiItem> list) {
+        bangumiView.reloadBangumiData(list);
+    }
+
+    @Override
+    public void onReloadFailed(BmobException e) {
+        bangumiView.onReloadFailed(e);
     }
 }
