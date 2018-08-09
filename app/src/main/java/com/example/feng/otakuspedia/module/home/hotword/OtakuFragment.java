@@ -1,5 +1,6 @@
 package com.example.feng.otakuspedia.module.home.hotword;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +21,7 @@ import com.example.feng.otakuspedia.R;
 import com.example.feng.otakuspedia.activity.OtakuInfoActivity;
 import com.example.feng.otakuspedia.adpter.OtakuItemAdapter;
 import com.example.feng.otakuspedia.bean.OtakuItem;
+import com.example.feng.otakuspedia.util.LogUtil;
 import com.example.feng.otakuspedia.util.ToastUtil;
 
 import java.util.ArrayList;
@@ -64,6 +66,7 @@ public class OtakuFragment extends Fragment implements IHotWordView {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        LogUtil.lazilyGetInstance().debug("Otaku", "onCreate");
         super.onCreate(savedInstanceState);
         hotWordPresenter = new HotWordPresenter(this);
     }
@@ -73,6 +76,7 @@ public class OtakuFragment extends Fragment implements IHotWordView {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         if (mView == null) {
+            LogUtil.lazilyGetInstance().debug("Otaku", "onCreateView");
             mView = inflater.inflate(R.layout.otaku_fragment, container, false);
             unbinder = ButterKnife.bind(this, mView);
             hotWordPresenter.getHotWordData(loadFactor);
@@ -198,7 +202,56 @@ public class OtakuFragment extends Fragment implements IHotWordView {
 
     @Override
     public void onDestroy() {
+        LogUtil.lazilyGetInstance().debug("Otaku", "onDestroy");
         super.onDestroy();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        LogUtil.lazilyGetInstance().debug("Otaku", "onAttach");
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        LogUtil.lazilyGetInstance().debug("Otaku", "onViewCreated");
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        LogUtil.lazilyGetInstance().debug("Otaku", "onActivityCreated");
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        LogUtil.lazilyGetInstance().debug("Otaku", "onStart");
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        LogUtil.lazilyGetInstance().debug("Otaku", "onResume");
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        LogUtil.lazilyGetInstance().debug("Otaku", "onPause");
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        LogUtil.lazilyGetInstance().debug("Otaku", "onStop");
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        LogUtil.lazilyGetInstance().debug("Otaku", "onDestroyView");
+        super.onDestroyView();
     }
 }

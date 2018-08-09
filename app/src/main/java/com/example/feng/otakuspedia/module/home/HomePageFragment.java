@@ -1,5 +1,7 @@
 package com.example.feng.otakuspedia.module.home;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,11 +18,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.feng.otakuspedia.R;
+import com.example.feng.otakuspedia.activity.SearchActivity;
 import com.example.feng.otakuspedia.adpter.PartitionPagerAdapter;
 import com.example.feng.otakuspedia.bean.MessageEvent;
 import com.example.feng.otakuspedia.module.home.bangumi.BangumiFragment;
 import com.example.feng.otakuspedia.module.home.character.CharacterFragment;
 import com.example.feng.otakuspedia.module.home.hotword.OtakuFragment;
+import com.example.feng.otakuspedia.util.LogUtil;
 import com.example.feng.otakuspedia.util.ToastUtil;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
@@ -48,8 +52,6 @@ public class HomePageFragment extends Fragment {
     ViewPager viewPager;
     @BindView(R.id.tl_home)
     TabLayout topTabBar;
-    @BindView(R.id.search_view)
-    MaterialSearchView searchView;
 
     /**
      * 生成HomePageFragment实例
@@ -57,6 +59,11 @@ public class HomePageFragment extends Fragment {
      */
     public static HomePageFragment getInstance() {
         return new HomePageFragment();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
 
     @Override
@@ -72,51 +79,10 @@ public class HomePageFragment extends Fragment {
         if (mView == null) {
             mView = inflater.inflate(R.layout.homepage_fragment, container, false);
             unbinder = ButterKnife.bind(this, mView);
-            initSearchView();
             createInnerPager();
 
         }
         return mView;
-    }
-
-    /**
-     * 初始化搜索框
-     */
-    private void initSearchView() {
-        searchView.setVoiceSearch(false);
-        searchView.setEllipsize(true);
-        setListenerForSearchView();
-    }
-
-    // 给搜索框添加监听事件
-    private void setListenerForSearchView() {
-        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                if (topTabBar.getSelectedTabPosition() == 0)
-                    EventBus.getDefault().post(new MessageEvent(query,"OtakuItem"));
-                else if (topTabBar.getSelectedTabPosition() == 1)
-                    EventBus.getDefault().post(new MessageEvent(query,"BangumiItem"));
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return true;
-            }
-        });
-        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
-            @Override
-            public void onSearchViewShown() {}
-
-            @Override
-            public void onSearchViewClosed() {
-                if (topTabBar.getSelectedTabPosition() == 0)
-                    EventBus.getDefault().post(new MessageEvent("","OtakuItem"));
-                else if (topTabBar.getSelectedTabPosition() == 1)
-                    EventBus.getDefault().post(new MessageEvent("","BangumiItem"));
-            }
-        });
     }
 
     /**
@@ -143,14 +109,13 @@ public class HomePageFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.my_menu, menu);
-        /*MenuItem item = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(item);*/
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_search:
+                startActivity(new Intent(getActivity(), SearchActivity.class));
                 ToastUtil.toast(getContext(), "搜索");
                 break;
             case R.id.action_sort:

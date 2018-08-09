@@ -1,5 +1,6 @@
 package com.example.feng.otakuspedia.module.home.character;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,9 +17,9 @@ import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.feng.otakuspedia.R;
-import com.example.feng.otakuspedia.activity.BangumiInfoActivity;
 import com.example.feng.otakuspedia.adpter.CharacterItemAdapter;
 import com.example.feng.otakuspedia.bean.CharacterItem;
+import com.example.feng.otakuspedia.util.LogUtil;
 import com.example.feng.otakuspedia.util.ToastUtil;
 
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ public class CharacterFragment extends Fragment implements ICharacterView {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        LogUtil.lazilyGetInstance().debug("Character", "onCreate");
         super.onCreate(savedInstanceState);
         characterPresenter = new CharacterPresenter(this);
     }
@@ -66,6 +68,7 @@ public class CharacterFragment extends Fragment implements ICharacterView {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         if (mView == null) {
+            LogUtil.lazilyGetInstance().debug("Character", "onCreateView");
             mView = inflater.inflate(R.layout.bangumi_fragment, container, false);
             unbinder = ButterKnife.bind(this, mView);
             characterPresenter.loadCharacterData(loadFactor);
@@ -180,14 +183,60 @@ public class CharacterFragment extends Fragment implements ICharacterView {
         if (item != null) {
 
         }
-        Intent intent = new Intent(getContext(), BangumiInfoActivity.class);
-        intent.putExtras(bundle);
-        getActivity().startActivity(intent);
     }
 
     @Override
     public void onDestroy() {
+        LogUtil.lazilyGetInstance().debug("Character", "onDestroy");
         super.onDestroy();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        LogUtil.lazilyGetInstance().debug("Character", "onAttach");
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        LogUtil.lazilyGetInstance().debug("Character", "onViewCreated");
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        LogUtil.lazilyGetInstance().debug("Character", "onActivityCreated");
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        LogUtil.lazilyGetInstance().debug("Character", "onStart");
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        LogUtil.lazilyGetInstance().debug("Character", "onResume");
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        LogUtil.lazilyGetInstance().debug("Character", "onPause");
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        LogUtil.lazilyGetInstance().debug("Character", "onStop");
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        LogUtil.lazilyGetInstance().debug("Character", "onDestroyView");
+        super.onDestroyView();
     }
 }
