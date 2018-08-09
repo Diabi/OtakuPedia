@@ -1,11 +1,9 @@
 package com.example.feng.otakuspedia.module.home.bangumi;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +18,7 @@ import com.example.feng.otakuspedia.R;
 import com.example.feng.otakuspedia.activity.BangumiInfoActivity;
 import com.example.feng.otakuspedia.adpter.BangumiItemAdapter;
 import com.example.feng.otakuspedia.bean.BangumiItem;
+import com.example.feng.otakuspedia.module.base.BaseFragment;
 import com.example.feng.otakuspedia.util.LogUtil;
 import com.example.feng.otakuspedia.util.ToastUtil;
 
@@ -38,7 +37,7 @@ import cn.bmob.v3.listener.FindListener;
  * Created by Feng on 2018/6/26.
  */
 
-public class BangumiFragment extends Fragment implements IBangumiView {
+public class BangumiFragment extends BaseFragment implements IBangumiView {
 
     private View mView;
     private Unbinder unbinder;
@@ -47,8 +46,6 @@ public class BangumiFragment extends Fragment implements IBangumiView {
     private static int loadFactor = 4;
 
     private BangumiPresenter bangumiPresenter;
-    private boolean isViewInitiated = false;
-    private boolean isVisibleToUser = false;
     
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
@@ -73,7 +70,6 @@ public class BangumiFragment extends Fragment implements IBangumiView {
         if (mView == null) {
             LogUtil.lazilyGetInstance().debug("Bangumi", "onCreateView");
             mView = inflater.inflate(R.layout.bangumi_fragment, container, false);
-            isViewInitiated = true;
             unbinder = ButterKnife.bind(this, mView);
             setOnPullRefresh();
         }
@@ -81,26 +77,8 @@ public class BangumiFragment extends Fragment implements IBangumiView {
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            this.isVisibleToUser = true;
-            lazyLoad();
-        } else {
-            this.isVisibleToUser = false;
-        }
-    }
-
-    /**
-     * 懒加载
-     */
-    private void lazyLoad() {
-        if (isVisibleToUser && isViewInitiated) {
-            bangumiPresenter.getBangumiData(loadFactor);
-            // 防止重复加载
-            isVisibleToUser = false;
-            isViewInitiated = false;
-        }
+    public void lazyLoadData() {
+        bangumiPresenter.getBangumiData(loadFactor);
     }
 
     @Override

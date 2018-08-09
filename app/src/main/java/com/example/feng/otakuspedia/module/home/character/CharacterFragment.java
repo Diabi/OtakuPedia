@@ -19,6 +19,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.feng.otakuspedia.R;
 import com.example.feng.otakuspedia.adpter.CharacterItemAdapter;
 import com.example.feng.otakuspedia.bean.CharacterItem;
+import com.example.feng.otakuspedia.module.base.BaseFragment;
 import com.example.feng.otakuspedia.util.LogUtil;
 import com.example.feng.otakuspedia.util.ToastUtil;
 
@@ -37,7 +38,7 @@ import cn.bmob.v3.listener.FindListener;
  * Created by Feng on 2018/6/26.
  */
 
-public class CharacterFragment extends Fragment implements ICharacterView {
+public class CharacterFragment extends BaseFragment implements ICharacterView {
 
     private View mView;
     private Unbinder unbinder;
@@ -71,10 +72,14 @@ public class CharacterFragment extends Fragment implements ICharacterView {
             LogUtil.lazilyGetInstance().debug("Character", "onCreateView");
             mView = inflater.inflate(R.layout.bangumi_fragment, container, false);
             unbinder = ButterKnife.bind(this, mView);
-            characterPresenter.loadCharacterData(loadFactor);
             setOnPullRefresh();
         }
         return mView;
+    }
+
+    @Override
+    public void lazyLoadData() {
+        characterPresenter.loadCharacterData(loadFactor);
     }
 
     @Override
