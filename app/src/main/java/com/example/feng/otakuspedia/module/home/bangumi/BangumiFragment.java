@@ -47,6 +47,8 @@ public class BangumiFragment extends Fragment implements IBangumiView {
     private static int loadFactor = 4;
 
     private BangumiPresenter bangumiPresenter;
+    private boolean isViewInitiated = false;
+    private boolean isVisibleToUser = false;
     
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
@@ -71,11 +73,34 @@ public class BangumiFragment extends Fragment implements IBangumiView {
         if (mView == null) {
             LogUtil.lazilyGetInstance().debug("Bangumi", "onCreateView");
             mView = inflater.inflate(R.layout.bangumi_fragment, container, false);
+            isViewInitiated = true;
             unbinder = ButterKnife.bind(this, mView);
-            bangumiPresenter.getBangumiData(loadFactor);
             setOnPullRefresh();
         }
         return mView;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            this.isVisibleToUser = true;
+            lazyLoad();
+        } else {
+            this.isVisibleToUser = false;
+        }
+    }
+
+    /**
+     * 懒加载
+     */
+    private void lazyLoad() {
+        if (isVisibleToUser && isViewInitiated) {
+            bangumiPresenter.getBangumiData(loadFactor);
+            // 防止重复加载
+            isVisibleToUser = false;
+            isViewInitiated = false;
+        }
     }
 
     @Override
@@ -198,53 +223,5 @@ public class BangumiFragment extends Fragment implements IBangumiView {
         LogUtil.lazilyGetInstance().debug("Bangumi", "onDestroy");
         super.onDestroy();
         unbinder.unbind();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        LogUtil.lazilyGetInstance().debug("Bangumi", "onAttach");
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        LogUtil.lazilyGetInstance().debug("Bangumi", "onViewCreated");
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        LogUtil.lazilyGetInstance().debug("Bangumi", "onActivityCreated");
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onStart() {
-        LogUtil.lazilyGetInstance().debug("Bangumi", "onStart");
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        LogUtil.lazilyGetInstance().debug("Bangumi", "onResume");
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        LogUtil.lazilyGetInstance().debug("Bangumi", "onPause");
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        LogUtil.lazilyGetInstance().debug("Bangumi", "onStop");
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroyView() {
-        LogUtil.lazilyGetInstance().debug("Bangumi", "onDestroyView");
-        super.onDestroyView();
     }
 }
